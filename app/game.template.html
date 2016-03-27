@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg/" [attr.width]="600" [attr.height]="600" [attr.viewBox]="'0 0 '+dim*500+' '+dim*500"  class="img-responsive">  
+
+    <defs><radialGradient id="black" cx=".3" cy=".3" r=".8">
+    <stop offset="0" stop-color="#777"/>
+    <stop offset=".3" stop-color="#222"/>
+    <stop offset="1" stop-color="#000"/>
+    </radialGradient></defs>
+    
+    <defs><radialGradient id="white" cx=".47" cy=".49" r=".48">
+    <stop offset=".7" stop-color="#FFF"/>
+    <stop offset=".9" stop-color="#DDD"/>
+    <stop offset="1" stop-color="#777"/>
+    </radialGradient></defs>
+    
+    <rect [attr.width]="dim*500" [attr.height]="dim*500" fill="#DCB35C"/>
+    <path *ngFor="#line of lines" stroke="#000" stroke-width="20"  [attr.d]="'M240,'+line.a+'H'+line.b"/>
+    <path *ngFor="#line of lines" stroke="#000" stroke-width="20"  [attr.d]="'M'+line.a+',240V'+line.b"/>
+    <circle *ngFor="#star of stars" [attr.cx]="star.x" [attr.cy]="star.y" r="50"/>
+    
+    <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#row of dispPos; #i = index" [attr.y]="i*500">
+        <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#cur of row; #j = index" width="500" height="500" [attr.x]="j*500" [ngSwitch]="cur">
+			<template [ngSwitchWhen]="1">
+			    <circle cx="250" cy="250" r="245" fill="url(#black)"/>
+			</template>
+			<template [ngSwitchWhen]="-1">
+			    <circle cx="250" cy="250" r="245" fill="url(#white)"/>
+			</template>
+			<template [ngSwitchWhen]="0">
+			    <circle cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)" (mouseenter)="onMouseenter($event, i, j)" (mouseleave)="onMouseleave($event, i, j)"/>
+			</template>
+        </svg>
+    </svg>
+</svg>
