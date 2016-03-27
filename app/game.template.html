@@ -20,13 +20,14 @@
     <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#row of dispPos; #i = index" [attr.y]="i*500">
         <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#cur of row; #j = index" width="500" height="500" [attr.x]="j*500" [ngSwitch]="cur">
 			<template [ngSwitchWhen]="1">
-			    <circle cx="250" cy="250" r="245" fill="url(#black)"/>
+			    <circle class="black" cx="250" cy="250" r="245" fill="url(#black)"/>
 			</template>
 			<template [ngSwitchWhen]="-1">
-			    <circle cx="250" cy="250" r="245" fill="url(#white)"/>
+			    <circle class="white" cx="250" cy="250" r="245" fill="url(#white)"/>
 			</template>
 			<template [ngSwitchWhen]="0">
-			    <circle cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)" (mouseenter)="onMouseenter($event, i, j)" (mouseleave)="onMouseleave($event, i, j)"/>
+			    <circle *ngIf="turn == 1" class="empty-black" cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)"/>
+			    <circle *ngIf="turn == -1" class="empty-white" cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)"/>
 			</template>
         </svg>
     </svg>
