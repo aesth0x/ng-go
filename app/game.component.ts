@@ -27,6 +27,16 @@ import {Component, Input, SimpleChange, OnChanges, AfterViewChecked} from 'angul
 @Component({
     selector: 'ago-game',
     templateUrl: 'app/game.template.html',
+    styles: [`
+        .empty-black:hover {
+            fill: url(#black);
+            fill-opacity: 0.3;
+        }
+        .empty-white:hover {
+            fill: url(#white);
+            fill-opacity: 0.3;
+        }
+    `]
 })
 
 
@@ -44,14 +54,14 @@ export class GameComponent implements OnChanges, AfterViewChecked{
     /**
      * AfterViewChecked interface function; keep the mouseclick atomic.
      */       
-    ngAfterViewChecked() {
+    ngAfterViewChecked(): void {
         this.ready = true;
     }
     
     /**
      * OnChanges interface function.
      */       
-    ngOnChanges(changes: {[propertyName: string]: SimpleChange}) {
+    ngOnChanges(changes: {[propertyName: string]: SimpleChange}): void {
         for (let propName in changes) {
             if (propName === "dim") this.onDimChange();
         }  
@@ -60,7 +70,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
     /**
      * Called when dim property is changed; reinitialize the game.
      */      
-    onDimChange() {
+    onDimChange(): void {
         this.ready = true;
         this.dispPos = this.createBoard(this.dim);
         this.calcPos = this.createBoard(this.dim);
@@ -75,7 +85,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * @param y: y coordinate
      * @param c: color
      */      
-    isPlayable(x: number, y: number, c: number) {
+    isPlayable(x: number, y: number, c: number): boolean {
         if (this.calcPos[x][y] != 0) {
             return false;
         }
@@ -100,7 +110,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * @param x: x coordinate
      * @param y: y coordinate
      */      
-    countLiberties(x: number, y: number) {
+    countLiberties(x: number, y: number): number {
         var group = this.getSelfGroup(x, y);
         return this.countGroupLiberties(group);
     }
@@ -109,7 +119,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Count the liberties of a group.
      * @param group: a group of stones
      */      
-    countGroupLiberties(group) {
+    countGroupLiberties(group): number {
         var explore = {};
         for(var prop in group) {
             if(group.hasOwnProperty(prop)) {
@@ -141,7 +151,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * @param x: x coordinate
      * @param y: y coordinate
      */     
-    getNeighbors(x: number, y: number) {
+    getNeighbors(x: number, y: number): {[strName: string]: boolean}[] {
         var color = this.calcPos[x][y];       
         var group = this.getSelfGroup(x, y);
         var neighborStones = {};
@@ -181,10 +191,10 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * @param x: x coordinate
      * @param y: y coordinate
      */     
-    getSelfGroup(x: number, y: number) {
+    getSelfGroup(x: number, y: number): {[strName: string]: boolean} {
         var color = this.calcPos[x][y];
         var explore = {};
-        var visited = {};
+        var visited: {[strName: string]: boolean} = {};
         explore[this.xy2str(x, y)] = true;
         while (!this.isEmpty(explore)) {
             var str = this.getFirst(explore);
@@ -210,7 +220,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Remove all stones in the input group.
      * @param group: a group of stones
      */   
-    removeGroup(group) {
+    removeGroup(group): void {
         for(var prop in group) {
             if(group.hasOwnProperty(prop)) {
                 var pos = this.str2pos(prop);
@@ -226,7 +236,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * @param x: x coordinate
      * @param y: y coordinate
      */   
-    isOnBoard(x: number, y: number) {
+    isOnBoard(x: number, y: number): boolean {
         if (x >= this.dim || y >= this.dim || x < 0 || y < 0) return false;
         return true;
     }
@@ -236,7 +246,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Helper to get the first key of an object, return null if empty.
      * @param obj: object
      */    
-    getFirst(obj) {
+    getFirst(obj): string {
         for(var prop in obj) {
             if(obj.hasOwnProperty(prop)) {
                 return prop;
@@ -274,7 +284,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * @param x: x coordinate
      * @param y: y coordinate
      */
-    xy2str(x: number, y: number) {
+    xy2str(x: number, y: number): string {
         return x + "," + y; 
     }
         
@@ -282,7 +292,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Helper to stringify a poisition object (<e.g.> {x: 1, y: 2}) to a string (<e.g.> "1,2").
      * @param pos: a position object
      */
-    pos2str(pos) {
+    pos2str(pos): string {
         return pos.x + "," + pos.y; 
     }
     
@@ -290,7 +300,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Helper to de-stringify a string (<e.g.> "1,2") to a poisition object (<e.g.> {x: 1, y: 2}).
      * @param str: string representation of a position object
      */
-    str2pos(str: string) {
+    str2pos(str: string): {x: number; y: number;} {
         var res = str.split(",");
         return {x: parseInt(res[0]), y: parseInt(res[1])};
     }
@@ -300,7 +310,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Helper to generate a dim*dim 2D array.
      * @param dim: dimension
      */
-    createBoard(dim: number) {
+    createBoard(dim: number): number[][] {
         var board = [];
         for (var i = 0; i < dim; i++) {
             board[i] = [];
@@ -315,7 +325,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Helper to get lines of the board grid for svg drawing.
      * @param dim: dimension
      */    
-    getLines(dim: number) {
+    getLines(dim: number): {a: number; b: number;}[] {
         var lines = [];
         var end = 500 * dim -240;
         for (var i = 0; i < dim; i++) {
@@ -328,7 +338,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * Helper to get circles of the board stars for svg drawing.
      * @param dim: dimension
      */        
-    getStars(dim: number) {
+    getStars(dim: number): {x: number; y: number;}[] {
         var stars = [];
         if (dim == 19) {
             stars.push(
@@ -358,8 +368,9 @@ export class GameComponent implements OnChanges, AfterViewChecked{
      * When the game is ready, add a stone to DOM if playable.
      * @param x: x coordinate
      * @param y: y coordinate
-     */    
-    onClick(x: number, y: number) {
+     */
+    onClick(x: number, y: number): void {
+        console.log("click: " + x + "," + y);
         if (!this.active || !this.ready) return;
         if(this.isPlayable(x, y, this.turn)) {
             this.ready = false; // TODO
@@ -373,31 +384,5 @@ export class GameComponent implements OnChanges, AfterViewChecked{
             }
             this.turn = -this.turn;
         }
-    }
-    
-    /**
-     * When the game is ready, add DOM effect if playable. 
-     * @param $event: jQuery event object
-     * @param x: x coordinate
-     * @param y: y coordinate
-     */
-    onMouseenter($event, x: number, y: number) {
-        if (!this.active || !this.ready) return;
-        if(this.isPlayable(x, y, this.turn)) {
-            $event.target.setAttributeNS(null, "fill", this.turn == 1 ? "url(#black)" : "url(#white)");
-            $event.target.setAttributeNS(null, "fill-opacity", "0.3");
-        }
-    }
-
-    /**
-     * When the game is ready, restore DOM effect if playable.
-     * @param $event 
-     * @param x: x coordinate
-     * @param y: y coordinate
-     */
-    onMouseleave($event, x: number, y: number) {
-        if (!this.active || !this.ready) return;
-            $event.target.setAttributeNS(null, "fill", "");
-            $event.target.setAttributeNS(null,"fill-opacity","0");
-    }
+    }  
 }
