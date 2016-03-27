@@ -1,7 +1,8 @@
 # AngularGo
 
-AngularGo is an Angular 2 Go game web app. 
-The demo is here: http://www.makehive.com/angulargo/
+AngularGo is an Angular 2 Go game web app.
+
+The demo is here -  http://www.makehive.com/angulargo/
 
 ## Features
 
