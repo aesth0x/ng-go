@@ -26,17 +26,7 @@ import {Component, Input, SimpleChange, OnChanges, AfterViewChecked} from 'angul
 
 @Component({
     selector: 'ago-game',
-    templateUrl: 'app/game.template.html',
-    styles: [`
-        .empty-black:hover {
-            fill: url(#black);
-            fill-opacity: 0.3;
-        }
-        .empty-white:hover {
-            fill: url(#white);
-            fill-opacity: 0.3;
-        }
-    `]
+    templateUrl: 'app/game.template.html'
 })
 
 
@@ -44,6 +34,7 @@ export class GameComponent implements OnChanges, AfterViewChecked{
     
     @Input() dim: number = 19;                  // board dimension
     @Input() active: boolean = true;            // freeze the board if inactive
+    @Input() coordinate: boolean = true;        // show coordinate if true
     ready: boolean = true;                      // diable mouse actions if not ready (help to make mouse actions atomic)
     calcPos: number[][] = this.createBoard(19); // position for calculation
     dispPos: number[][] = this.createBoard(19); // position for display only, binded to svg
@@ -64,19 +55,28 @@ export class GameComponent implements OnChanges, AfterViewChecked{
     ngOnChanges(changes: {[propertyName: string]: SimpleChange}): void {
         for (let propName in changes) {
             if (propName === "dim") this.onDimChange();
-        }  
+            if (propName === "coordinate") this.onCoordinateChange();
+        }
     }
     
     /**
      * Called when dim property is changed; reinitialize the game.
      */      
     onDimChange(): void {
+        if (this.dim < 1 || this.dim > 26) this.dim = 19; // TODO
         this.ready = true;
         this.dispPos = this.createBoard(this.dim);
         this.calcPos = this.createBoard(this.dim);
         this.turn = 1;
         this.lines = this.getLines(this.dim);
         this.stars = this.getStars(this.dim);
+    }
+    
+    /**
+     * Called when coordinate property is changed; reinitialize the game.
+     */      
+    onCoordinateChange(): void {
+
     }
 
     /**
@@ -305,6 +305,16 @@ export class GameComponent implements OnChanges, AfterViewChecked{
         return {x: parseInt(res[0]), y: parseInt(res[1])};
     }
     
+    /**
+     * Helper to convert a number to a letter.
+     * @param num: a number >= 1 && <= 26
+     */    
+    num2letter(num: number): string {
+        if(num >= 1 && num <= 26){
+            return String.fromCharCode(64 + num);
+        }
+        return "";
+    }
     
     /**
      * Helper to generate a dim*dim 2D array.
