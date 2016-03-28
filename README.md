@@ -7,7 +7,7 @@ The demo is here -  http://www.makehive.com/angulargo/ (Updated: 3/27/2016)
 ## Features
 
 * Configurable game board dimension. 
-* Game board is draw dynamically with svg, therefore no resolution change on resizing. 
+* Game board is draw dynamically with svg, therefore no loss of resolution on resizing. 
 * Go game rules implemented, except for ko. 
 
 ## Setup
