@@ -43,7 +43,7 @@ import {GameComponent} from './game.component';
 export class AppComponent {
     
     dim = "19";
-    rule = true; //TODO
+    coordinate = true;
     black = "";
     white = "";
 
@@ -51,17 +51,17 @@ export class AppComponent {
         
     config = {
         dim: "19",
-        rule: "on",
+        coordinate: "on",
         black: "Player 1",
         white: "Player 2",
     };
     
-    rules = ["on", "off"];
+    coordinates = ["on", "off"];
 
 
     onStart() {
         this.dim = this.config.dim;
-        this.rule = this.config.rule === "on" ? true : false;
+        this.coordinate = this.config.coordinate === "on" ? true : false;
         this.black = this.config.black;
         this.white = this.config.white;
         
@@ -70,7 +70,7 @@ export class AppComponent {
     
     onReset() {
         this.config.dim = "";
-        this.config.rule = "";
+        this.config.coordinate = "";
         this.config.black = "";
         this.config.white = "";
     }
