@@ -5,7 +5,7 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-8">
-                <ago-game [dim]="dim"></ago-game>
+                <ago-game [dim]="dim" [coordinate]="coordinate"></ago-game>
             </div>
             <div class="col-sm-4">
                 
@@ -21,14 +21,14 @@
                                 Dimension within 1 ~ 100
                             </div>
                         </div>
-                        <!-- Rule -->
+                        <!-- Coordinate -->
                         <div class="form-group">
-                            <label for="rule">Rule</label>
-                            <select class="form-control" required [(ngModel)]="config.rule" ngControl="rule" #ruleContent="ngForm" >
-                                <option *ngFor="#r of rules" [value]="r">{{r}}</option>
+                            <label for="coordinate">Coordinate</label>
+                            <select class="form-control" required [(ngModel)]="config.coordinate" ngControl="coordinate" #coordinateContent="ngForm" >
+                                <option *ngFor="#c of coordinates" [value]="c">{{c}}</option>
                             </select>
-                            <div [hidden]="(ruleContent.valid || ruleContent.pristine)" class="alert alert-danger">
-                                Rule is required
+                            <div [hidden]="(coordinateContent.valid || coordinateContent.pristine)" class="alert alert-danger">
+                                Coordinate option is required
                             </div>
                         </div>
                         <!-- Black -->
@@ -56,8 +56,8 @@
                         <div class="col-xs-9  pull-left">{{ config.dim }}</div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-3">Rule: </div>
-                        <div class="col-xs-9 pull-left">{{ config.rule }}</div>
+                        <div class="col-xs-3">Coordinate: </div>
+                        <div class="col-xs-9 pull-left">{{ config.coordinate }}</div>
                     </div>
                     <div class="row">
                         <div class="col-xs-3">Black: </div>
