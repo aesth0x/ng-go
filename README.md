@@ -6,6 +6,8 @@ ng-go is an Angular 2 Go game web app.
 
 The demo is here -  http://yli.io/app/ng-go/ (Updated: 4/2/2016)
 
+![alt tag](http://yli.io/app/ng-go/demo.png)
+
 ## Features
 
 * Support new game and sgf import. 
