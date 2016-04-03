@@ -1,0 +1,31 @@
+<!-- new game -->
+<div id="new" *ngIf="type === 'new'">
+    <button type="button" class="btn btn-primary" (click)="onRegret()">
+        Regret
+    </button>
+</div>
+
+<!-- impor sgf -->
+<div id="import" *ngIf="type === 'import'">
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary btn-lg" (click)="onFastBackward()">
+            <span class="glyphicon glyphicon-fast-backward"></span>
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onStepBackward()">
+            <span class="glyphicon glyphicon-step-backward"></span>
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="onStepForward()">
+            <span class="glyphicon glyphicon-step-forward"></span>
+        </button> 
+        <button type="button" class="btn btn-primary btn-lg" (click)="onFastForward()">
+            <span class="glyphicon glyphicon-fast-forward"></span>
+        </button>
+    </div>
+    <hr>
+    <button type="button" class="btn btn-primary" (click)="onStartTest()">
+        Test Play
+    </button>
+    <button type="button" class="btn btn-primary" (click)="onEndTest()">
+        End Test
+    </button>
+</div>

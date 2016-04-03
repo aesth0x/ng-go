@@ -1,0 +1,26 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">ng-go</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-8">
+                <ng-board></ng-board>
+            </div>
+            <div class="col-sm-4">
+                <ul class="nav nav-tabs">
+                    <li [class.active]=newTabActive (click)="onNewTabClick()"><a href="#">New</a></li>
+                    <li [class.active]=!newTabActive (click)="onImportTabClick()"><a href="#">Import</a></li>
+                </ul>
+                <ng-config type="new" [hidden]="!newTabActive"></ng-config>
+                <ng-config type="import" [hidden]="newTabActive"></ng-config>
+                <hr>
+                <ng-control type="new" [hidden]="!newTabActive"></ng-control>
+                <ng-control type="import" [hidden]="newTabActive"></ng-control>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- this directive is invisible -->
+<ng-core></ng-core>

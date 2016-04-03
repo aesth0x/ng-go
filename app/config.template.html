@@ -1,0 +1,74 @@
+<!-- new gmae -->
+<div id="new" *ngIf="type === 'new'">
+    <!-- before submit -->
+    <div  [hidden]="submitted">
+        <h3>Game Config</h3>
+        <form (ngSubmit)="onSubmit()" #configForm="ngForm">
+            <!-- Dimension -->
+            <div name="dimGroup" class="form-group">
+                <label for="dim">Dimension</label>
+                <input type="number" min="1" max="26" class="form-control" required [(ngModel)]="config.dim" ngControl="dim" #dimContent="ngForm" />
+                <div [hidden]="(dimContent.valid || dimContent.pristine)" class="alert alert-danger">
+                    Dimension field is required.
+                </div>
+            </div>
+            <!-- Handicaps -->
+            <div name="handicapsGroup" class="form-group">
+                <label for="handicaps">Handicaps</label>
+                <input type="number" min="0" class="form-control" required [(ngModel)]="config.handicaps" ngControl="handicaps" #handicapsContent="ngForm" />
+                <div [hidden]="(handicapsContent.valid || handicapsContent.pristine)" class="alert alert-danger">
+                    Handicaps field is required.
+                </div>
+            </div>
+            <!-- Black -->
+            <div class="form-group">
+                <label for="black">Black</label>
+                <input type="text" class="form-control" [(ngModel)]="config.black" ngControl="black"  #blackContent="ngForm" />
+            </div>
+            <!-- White -->
+            <div class="form-group">
+                <label for="white">White</label>
+                <input type="text" class="form-control" [(ngModel)]="config.white" ngControl="white"  #whiteContent="ngForm" />
+            </div>
+            <button type="submit" class="btn btn-default" [disabled]="!configForm.form.valid">Start</button>
+            <button type="button" class="btn btn-default" (click)="onClear()">Clear</button>
+        </form>
+    </div>
+    <!-- after submit -->
+    <div [hidden]="!submitted">
+        <h3>Game Config</h3>
+        <hr>
+        <div class="row">
+            <div class="col-xs-3">Dimension: </div>
+            <div class="col-xs-9  pull-left">{{ config.dim }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">Handicaps: </div>
+            <div class="col-xs-9 pull-left">{{ config.handicaps }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">Black: </div>
+            <div class="col-xs-9 pull-left">{{ config.black }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">White: </div>
+            <div class="col-xs-9 pull-left">{{ config.white }}</div>
+        </div>
+        <br>
+        <button class="btn btn-default" (click)="onRestart()">Restart</button>
+    </div>
+</div>
+<!-- import sgf -->
+<div id="import" *ngIf="type === 'import'">
+    <div  [hidden]="submitted">
+        <h3>Import</h3>
+        <form (ngSubmit)="onImport()" #importForm="ngForm">
+            <!-- Sgf -->
+            <div class="form-group">
+                <label for="sgf">Paste sgf data here</label>
+                <textarea type="text" class="form-control" required [(ngModel)]="sgf" ngControl="sgf" rows="10"  #sgfContent="ngForm"></textarea>
+            </div>
+            <button type="submit" class="btn btn-default" rows="3" [disabled]="!importForm.form.valid">Import</button>
+        </form>
+    </div>
+</div>

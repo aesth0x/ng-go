@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg/" [attr.width]="600" [attr.height]="600" [attr.viewBox]="'0 0 '+(dim*500+1250)+' '+(dim*500+1250)"  class="img-responsive">  
+    
+    <!-- coordinates -->    
+    <svg xmlns="http://www.w3.org/2000/svg/" x="625" y="0">
+        <text class="text-coordinate" *ngFor="#row of grid; #k = index" [attr.x]="500*k+250" y="250" text-anchor="middle" alignment-baseline="central">
+            {{num2letter(k+1)}}
+        </text>    
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg/" x="0" y="625">
+        <text class="text-coordinate" *ngFor="#row of grid; #k = index" x="250" [attr.y]="500*k+250" text-anchor="middle" alignment-baseline="central">
+            {{dim-k}}
+        </text>    
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg/" x="625" [attr.y]="dim*500+750">
+        <text class="text-coordinate" *ngFor="#row of grid; #k = index" [attr.x]="500*k+250" y="250" text-anchor="middle" alignment-baseline="central">
+            {{num2letter(k+1)}}
+        </text>    
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg/" [attr.x]="dim*500+750" y="625">
+        <text class="text-coordinate" *ngFor="#row of grid; #k = index" x="250" [attr.y]="500*k+250" text-anchor="middle" alignment-baseline="central">
+            {{dim-k}}
+        </text>    
+    </svg>
+    
+    <!-- background color -->
+    <rect x="500" y="500" [attr.width]="dim*500+250" [attr.height]="dim*500+250" fill="#DCB35C" filter="url(#boardShadow)"/>
+   
+   <!-- lines, stars and stones --> 
+    <svg xmlns="http://www.w3.org/2000/svg/" x="625" y="625">  
+        <path *ngFor="#line of lines" stroke="#000" stroke-width="20"  [attr.d]="'M240,'+line.a+'H'+line.b"/>
+        <path *ngFor="#line of lines" stroke="#000" stroke-width="20"  [attr.d]="'M'+line.a+',240V'+line.b"/>
+        <circle *ngFor="#star of stars" [attr.cx]="star.x" [attr.cy]="star.y" r="50"/>
+        <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#row of grid; #i = index" [attr.x]="i*500">
+            <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#cur of row; #j = index" width="500" height="500" [attr.y]="j*500" [ngSwitch]="cur">
+                <template [ngSwitchWhen]="1">
+                    <circle class="black" cx="250" cy="250" r="245" fill="url(#black)"/>
+                </template>
+                <template [ngSwitchWhen]="-1">
+                    <circle class="white" cx="250" cy="250" r="245" fill="url(#white)"/>
+                </template>
+                <template [ngSwitchWhen]="0">
+                    <circle *ngIf="turn == 1" class="empty-black" cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)"/>
+                    <circle *ngIf="turn == -1" class="empty-white" cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)"/>
+                </template>
+            </svg>
+        </svg>
+    </svg>
+    
+    <!-- others -->
+    <defs>
+        <radialGradient id="black" cx=".3" cy=".3" r=".8">
+            <stop offset="0" stop-color="#777"/>
+            <stop offset=".3" stop-color="#222"/>
+            <stop offset="1" stop-color="#000"/>
+        </radialGradient>
+    </defs>
+    <defs>
+        <radialGradient id="white" cx=".47" cy=".49" r=".48">
+            <stop offset=".7" stop-color="#FFF"/>
+            <stop offset=".9" stop-color="#DDD"/>
+            <stop offset="1" stop-color="#777"/>
+        </radialGradient>
+    </defs>
+    <defs>
+        <filter id="boardShadow" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="25" dy="25"/>
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="25"/>
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
+        </filter>
+    </defs>
+    <style>
+        .empty-black:hover {
+            fill: url(#black);
+            fill-opacity: 0.3;
+        }
+        .empty-white:hover {
+            fill: url(#white);
+            fill-opacity: 0.3;
+        }
+        .text-coordinate {
+            font: 200px Verdana, Helvetica, Arial, sans-serif;
+        }  
+    </style>
+
+</svg>
