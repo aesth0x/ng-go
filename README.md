@@ -1,12 +1,16 @@
 # ng-go
 
+V 1.1.0
+
 ng-go is an Angular 2 Go game web app.
 
-The demo is here -  http://yli.io/app/ng-go/ (Updated: 3/27/2016)
+The demo is here -  http://yli.io/app/ng-go/ (Updated: 4/2/2016)
 
 ## Features
 
-* Configurable game board dimension. 
+* Support new game and sgf import. 
+* Step backward, step forward, and test play functions.
+* Configurable game board dimension (1x1 ~ 26x26). 
 * Game board is draw dynamically with svg, therefore no loss of resolution on resizing. 
 * Go game rules implemented, except for ko. 
 
