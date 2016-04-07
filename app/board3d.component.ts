@@ -219,7 +219,7 @@ export class Board3dComponent implements OnInit, OnDestroy {
             starMesh.position.z = 0.01;
             starMeshes.push(starMesh);    
         } else if (dim == 13) {
-            let coordinates = [-3, 0, 3];
+            let coordinates = [-3, 3];
             for (let i = 0; i < 2; i++) {
                 for (let j = 0; j < 2; j++) {
                     let starMesh = new THREE.Mesh(this.starGeometry, this.blackMaterial);
