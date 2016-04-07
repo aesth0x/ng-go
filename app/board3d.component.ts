@@ -52,9 +52,10 @@ export class Board3dComponent implements OnInit, OnDestroy {
     orbit;                          // controls
     ambientLight;                   // ambientLight
     lights;                         // lights
-    stoneGeometry;
-    gobanMaterial;
-    lineMaterial;
+    stoneGeometry;                  // stone geometry
+    gobanMaterial;                  // goban material
+    blackMaterial;                  // black materal, for lines and stars
+    starGeometry;                   // star geometry
     
     intersectTemp;                  // record the last intersected stone
     
@@ -120,9 +121,12 @@ export class Board3dComponent implements OnInit, OnDestroy {
             side: THREE.DoubleSide,
             shading: THREE.SmoothShading
         });
-        this.lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x000000
+        this.blackMaterial = new THREE.MeshBasicMaterial({
+            color: 0x000000, 
+            side: THREE.DoubleSide,
+            shading: THREE.SmoothShading
         });
+        this.starGeometry = new THREE.CircleGeometry(0.12, 32);
     }
     
     /**
@@ -158,13 +162,13 @@ export class Board3dComponent implements OnInit, OnDestroy {
                     transparent: true,
                     opacity: 0
 				});
-                let mesh = new THREE.Mesh(this.stoneGeometry, stoneMaterial);
-                mesh.position.x = i - (this.dim - 1) / 2;
-                mesh.position.y = - j + (this.dim - 1) / 2;
-                mesh.position.z = 0;
-                mesh.index = [i, j];
-                this.meshes.push(mesh);
-                this.scene.add(mesh);          
+                let stoneMesh = new THREE.Mesh(this.stoneGeometry, stoneMaterial);
+                stoneMesh.position.x = i - (this.dim - 1) / 2;
+                stoneMesh.position.y = - j + (this.dim - 1) / 2;
+                stoneMesh.position.z = 0;
+                stoneMesh.index = [i, j];
+                this.meshes.push(stoneMesh);
+                this.scene.add(stoneMesh);          
             }
         }
         // create & add goban mesh to scene
@@ -174,21 +178,22 @@ export class Board3dComponent implements OnInit, OnDestroy {
         this.meshes.push(gobanMesh);
         this.scene.add(gobanMesh);
         // create & add line meshes to scene
+        let lineGeometryHorizontal = new THREE.PlaneGeometry(this.dim - 1 + 0.05, 0.05);        
+        let lineGeometryVertical = new THREE.PlaneGeometry(0.05, this.dim - 1 + 0.05);
         for (let i = 0; i < this.dim; i++) {
-            let lineGeometryHorizontal = new THREE.Geometry();
-            let lineGeometryVertical = new THREE.Geometry();
-            lineGeometryHorizontal.vertices.push(
-                new THREE.Vector3(-(this.dim - 1) / 2, i - (this.dim - 1) / 2, 0.01),
-                new THREE.Vector3((this.dim - 1) / 2, i - (this.dim - 1) / 2, 0.01)
-            );
-            lineGeometryVertical.vertices.push(
-                new THREE.Vector3(i - (this.dim - 1) / 2, -(this.dim - 1) / 2, 0.01),
-                new THREE.Vector3(i - (this.dim - 1) / 2, (this.dim - 1) / 2, 0.01)
-            );
-            let lineHorizontal = new THREE.Line(lineGeometryHorizontal, this.lineMaterial);
-            let lineVertical = new THREE.Line(lineGeometryVertical, this.lineMaterial);
-            this.scene.add(lineHorizontal);
-            this.scene.add(lineVertical);
+            let lineMeshHorizontal = new THREE.Mesh(lineGeometryHorizontal, this.blackMaterial);
+            lineMeshHorizontal.position.y = i - (this.dim - 1) / 2;
+            lineMeshHorizontal.position.z = 0.01;
+            let lineMeshVertical = new THREE.Mesh(lineGeometryVertical, this.blackMaterial);
+            lineMeshVertical.position.x = i - (this.dim - 1) / 2;
+            lineMeshVertical.position.z = 0.01;            
+            this.scene.add(lineMeshHorizontal);
+            this.scene.add(lineMeshVertical);
+        }
+        // create & add star meshes to scene
+        let starMeshes = this.getStars(this.dim);
+        for (let i = 0; i < starMeshes.length; i++) {
+            this.scene.add(starMeshes[i]);
         }
     }
 
@@ -199,6 +204,44 @@ export class Board3dComponent implements OnInit, OnDestroy {
         requestAnimationFrame(this.render.bind(this));
         this.orbit.update();
         this.renderer.render(this.scene, this.camera);  
+    }
+
+    /**
+     * Helper to get circles of the board stars.
+     * @param dim: dimension
+     */        
+    getStars(dim: number) {
+        let starMeshes = [];
+        if (dim == 9) {
+            let starMesh = new THREE.Mesh(this.starGeometry, this.blackMaterial);
+            starMesh.position.x = 0;
+            starMesh.position.y = 0;                    
+            starMesh.position.z = 0.01;
+            starMeshes.push(starMesh);    
+        } else if (dim == 13) {
+            let coordinates = [-3, 0, 3];
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 2; j++) {
+                    let starMesh = new THREE.Mesh(this.starGeometry, this.blackMaterial);
+                    starMesh.position.x = coordinates[i];
+                    starMesh.position.y = coordinates[j];                    
+                    starMesh.position.z = 0.01;
+                    starMeshes.push(starMesh);
+                }
+            }            
+        } else if (dim == 19) {
+            let coordinates = [-6, 0, 6];
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    let starMesh = new THREE.Mesh(this.starGeometry, this.blackMaterial);
+                    starMesh.position.x = coordinates[i];
+                    starMesh.position.y = coordinates[j];                    
+                    starMesh.position.z = 0.01;
+                    starMeshes.push(starMesh);
+                }
+            }
+        }
+        return starMeshes;
     }
     
     /**
