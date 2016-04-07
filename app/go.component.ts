@@ -26,6 +26,7 @@ import {Component} from 'angular2/core';
 import {NgForm} from 'angular2/common';
 import {GoService} from './go.service';
 import {BoardComponent} from './board.component';
+import {Board3dComponent} from './board3d.component';
 import {ConfigComponent} from './config.component';
 import {ControlComponent} from'./control.component';
 import {CoreComponent} from './core.component';
@@ -33,12 +34,13 @@ import {CoreComponent} from './core.component';
 @Component({
     selector: 'ng-go',
     templateUrl: 'app/go.template.html',
-    directives: [BoardComponent, ConfigComponent, ControlComponent, CoreComponent],
+    directives: [BoardComponent, Board3dComponent, ConfigComponent, ControlComponent, CoreComponent],
     providers: [GoService]
 })
 export class GoComponent {
     
     newTabActive = true; // if new game config and control is shown
+    twodTabActive = true; //
     
     constructor(private goService: GoService) {}
     
@@ -54,6 +56,14 @@ export class GoComponent {
      */    
     onImportTabClick() {
         this.newTabActive = false;
+    }
+    
+    onTwodTabClick() {
+        this.twodTabActive = true;
+    }
+    
+    onThreedTabClick() {
+        this.twodTabActive = false;
     }
     
 }

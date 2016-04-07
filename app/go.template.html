@@ -5,7 +5,13 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-8">
-                <ng-board></ng-board>
+                <ul class="nav nav-tabs">
+                    <li [class.active]=twodTabActive (click)="onTwodTabClick()"><a href="#">2D</a></li>
+                    <li [class.active]=!twodTabActive (click)="onThreedTabClick()"><a href="#">3D</a></li>
+                </ul>
+                <ng-board [hidden]="!twodTabActive"></ng-board>
+                <ng-board3d [hidden]="twodTabActive"></ng-board3d>
+                
             </div>
             <div class="col-sm-4">
                 <ul class="nav nav-tabs">
@@ -21,6 +27,6 @@
         </div>
     </div>
 </div>
-
+<>
 <!-- this directive is invisible -->
 <ng-core></ng-core>
