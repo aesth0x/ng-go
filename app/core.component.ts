@@ -35,6 +35,8 @@ export class CoreComponent implements OnInit, OnDestroy {
     
     dim: number = 19;                       // dimension
     grid: number[][] = this.createGrid(19); // grid
+    grid_m1: number[][] = this.createGrid(19);// grid snapshot taken at time-1
+    grid_m2: number[][] = this.createGrid(19);// grid snapshot taken at time-2
     handicaps: number = 0;                  // handicaps
     mode: number = 0;                       // 1: play; 2: record; 3: testPlay
     
@@ -154,6 +156,14 @@ export class CoreComponent implements OnInit, OnDestroy {
         return this.getLength(liberties);
     }
 
+    /**
+     * To update this move in to historical snapshot, use this for detecting KO-rules
+     */
+    move_update(): void{
+        this.grid_m2 = this.copy(this.grid_m1);
+        this.grid_m1 = this.copy(this.grid);
+    }
+    
     /**
      * Get an array of groups which are input position's group's neighbors.
      * @param x: x coordinate
@@ -325,6 +335,64 @@ export class CoreComponent implements OnInit, OnDestroy {
     }
     
     /**
+     * Helper to generate a dim*dim 2D array. An override of Slice()
+     * @param grid: dim*dim 2D array.
+     */
+    copy(grid: number[][]): number[][]{
+        let dim = grid.length;
+        let board = [];
+        for (let i = 0; i < dim; i++) {
+            board[i] = [];
+            for (let j = 0; j < dim; j++) {
+                board[i][j] = grid[i][j];
+            }
+        }
+        return board;
+    }
+
+    /**
+     * Helper to compare two dim*dim 2D array by value.
+     * @param grid1: dim*dim 2D array.
+     * @param grid2: dim*dim 2D array.
+     */
+    isEqual(grid1: number[][],grid2: number[][]): boolean{
+        if (grid1.length != grid2.length){
+            return false;
+        }
+        let dim = grid1.length;
+        for (let i = 0; i < dim; i++) {
+            if (grid1[i].length != grid2[i].length){
+                return false;
+            }
+            for (let j = 0; j < dim; j++) {
+                if (grid1[i][j] != grid2[i][j]){
+                    return false
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Helper to check if an grid has no stone on it.
+     * @param grid: dim*dim 2D array.
+     */
+    isGridEmpty(grid: number[][]): boolean {
+        if (this.isEmpty(grid)){
+            console.log("Error: grid not exist");
+        }
+        let dim = grid.length;
+        for (let i = 0; i < dim; i++) {
+            for (let j = 0; j < dim; j++) {
+                if (grid[i][j] != 0){
+                    return false
+                }
+            }
+        }
+        return true;
+    }
+    
+    /**
      * Add a stone to DOM and update core if playable, a MOVERESP is sent.
      * @param x: x coordinate
      * @param y: y coordinate
@@ -429,6 +497,12 @@ export class CoreComponent implements OnInit, OnDestroy {
             case "MOVE":
                 if(this.mode == 1 || this.mode == 3) {
                     this.move(data.body.x, data.body.y);
+                    
+                    if (!this.isGridEmpty(this.grid_m2)&&this.isEqual(this.copy(this.grid),this.grid_m2)){
+                        alert("KO Rule! You can't move this way");
+                        this.regret();
+                    }
+                    this.move_update();
                 }
                 break;
             case "MOVE2":
