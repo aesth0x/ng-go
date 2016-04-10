@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import {Component, OnInit, OnDestroy} from 'angular2/core';
+import {Component, Input, OnInit, OnDestroy} from 'angular2/core';
 import {GoService} from './go.service';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -34,14 +34,16 @@ import {Subscription} from 'rxjs/Subscription';
 
 export class BoardComponent implements OnInit, OnDestroy {
     
-    dim: number = 19;                       // board dimension
-    grid: number[][] = this.createGrid(19); // position for display only, binded to svg
-    lines = this.getLines(19);              // lines for board grids
-    stars = this.getStars(19);              // circles for board stars
-    turn: number = 0;                       // 1: black; -1: white; 0: empty
-    active: boolean = false;                // freeze the board if inactive
+    @Input() showSequence: string = "false";
+    dim: number = 19;                           // board dimension
+    grid: number[][] = this.createGrid(19);     // position for display, binded to svg
+    sequence: number[][] = this.createGrid(19); // sequence number for sisplay, binded to svg
+    lines = this.getLines(19);                  // lines for board grids
+    stars = this.getStars(19);                  // circles for board stars
+    turn: number = 0;                           // 1: black; -1: white; 0: empty
+    active: boolean = false;                    // freeze the board if inactive
     
-    coreSubscription: Subscription;         // listen to data from <core>
+    coreSubscription: Subscription;             // listen to data from <core>
     
     constructor(private goService: GoService) {}
     
@@ -63,6 +65,7 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.turn = 0;
         this.active = false;
         this.grid = this.createGrid(this.dim);
+        this.sequence = this.createGrid(this.dim);
     }
     
     /**
@@ -159,6 +162,7 @@ export class BoardComponent implements OnInit, OnDestroy {
             case "INIT":
                 this.dim = data.body.dim;
                 this.grid = this.createGrid(data.body.dim);
+                this.sequence = this.createGrid(data.body.dim);
                 this.lines = this.getLines(data.body.dim);
                 this.stars = this.getStars(data.body.dim);
                 this.turn = data.body.turn;
@@ -170,9 +174,11 @@ export class BoardComponent implements OnInit, OnDestroy {
             case "MOVERESP":
                 for(let i = 0; i < data.body.add.length; i++) {
                     this.grid[data.body.add[i].x][data.body.add[i].y] = data.body.add[i].c;
+                    this.sequence[data.body.add[i].x][data.body.add[i].y] = data.body.add[i].s;
                 }
                 for(let i = 0; i < data.body.remove.length; i++) {
                     this.grid[data.body.remove[i].x][data.body.remove[i].y] = 0;
+                    this.sequence[data.body.remove[i].x][data.body.remove[i].y] = 0;
                 }
                 this.turn = data.body.turn;
                 break;

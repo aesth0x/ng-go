@@ -33,22 +33,23 @@ import {Subscription} from 'rxjs/Subscription';
 
 export class CoreComponent implements OnInit, OnDestroy {
     
-    dim: number = 19;                       // dimension
-    grid: number[][] = this.createGrid(19); // grid
-    handicaps: number = 0;                  // handicaps
-    mode: number = 0;                       // 1: play; 2: record; 3: testPlay
+    dim: number = 19;                           // dimension
+    grid: number[][] = this.createGrid(19);     // grid for stones
+    sequence: number[][] = this.createGrid(19); // sequence number
+    handicaps: number = 0;                      // handicaps
+    mode: number = 0;                           // 1: play; 2: record; 3: testPlay
     
-    steps: number = 0;                      // step count
-    turn: number = 0;                       // 1: black; -1: white
-    history: {add;remove;turn}[] = [];      // move history
-    testHistory: {add;remove;turn}[] = [];  // move history for test play
+    steps: number = 0;                          // step count
+    turn: number = 0;                           // 1: black; -1: white
+    history: {add;remove;turn}[] = [];          // move history
+    testHistory: {add;remove;turn}[] = [];      // move history for test play
     
-    black: string = "";                     // TODO
-    white: string = "";                     // TODO
+    black: string = "";                         // TODO
+    white: string = "";                         // TODO
 
-    configSubscription: Subscription;       // listen to data from <config>
-    controlSubscription: Subscription;      // listen to data from <control>
-    boardSubscription: Subscription;        // listen to data from <board>
+    configSubscription: Subscription;           // listen to data from <config>
+    controlSubscription: Subscription;          // listen to data from <control>
+    boardSubscription: Subscription;            // listen to data from <board>
 
     constructor(private goService: GoService) {}
     
@@ -85,6 +86,7 @@ export class CoreComponent implements OnInit, OnDestroy {
         this.turn = 0;
         this.history = [];
         this.grid = this.createGrid(this.dim);
+        this.sequence = this.createGrid(this.dim);
     }
     
     /**
@@ -334,11 +336,12 @@ export class CoreComponent implements OnInit, OnDestroy {
             let data = {
                 method: "MOVERESP",
                 body: {
-                    add: [{x: x, y: y, c: this.turn}],
+                    add: [{x: x, y: y, c: this.turn, s: this.steps + 1}],
                     remove: [],
                     turn: null
                 }
-            };               
+            };
+            this.sequence[x][y] = this.steps + 1;       
             this.grid[x][y] = this.turn;
             let neighborGroups = this.getNeighbors(x, y);
             for (let i = 0; i < neighborGroups.length; i++) {
@@ -347,7 +350,8 @@ export class CoreComponent implements OnInit, OnDestroy {
                         if(neighborGroups[i].hasOwnProperty(prop)) {
                             let pos = this.str2pos(prop);
                             this.grid[pos.x][pos.y] = 0;
-                            data.body.remove.push({x: pos.x, y:pos.y, c: -this.turn});
+                            data.body.remove.push({x: pos.x, y:pos.y, c: -this.turn, s: this.sequence[pos.x][pos.y]});
+                            this.sequence[pos.x][pos.y] = 0;
                         }
                     } 
                 }
@@ -378,9 +382,11 @@ export class CoreComponent implements OnInit, OnDestroy {
         }
         for (let i = 0; i < last.add.length; i++) {
             this.grid[last.add[i].x][last.add[i].y] = 0;
+            this.sequence[last.add[i].x][last.add[i].y] = 0;
         }
         for (let i = 0; i < last.remove.length; i++) {
             this.grid[last.remove[i].x][last.remove[i].y] = last.remove[i].c;
+            this.sequence[last.remove[i].x][last.remove[i].y] = last.remove[i].s;
         }
         let data = {
             method: "MOVERESP",
@@ -404,6 +410,7 @@ export class CoreComponent implements OnInit, OnDestroy {
             case "INIT":
                 this.dim = data.body.dim;
                 this.grid = this.createGrid(data.body.dim);
+                this.sequence = this.createGrid(data.body.dim);
                 this.mode = data.body.mode;
                 this.handicaps = data.body.handicaps;
                 this.black = data.body.black;
@@ -441,9 +448,11 @@ export class CoreComponent implements OnInit, OnDestroy {
                     let next = this.history[this.steps];
                     for(let i = 0; i < next.add.length; i++) {
                         this.grid[next.add[i].x][next.add[i].y] = next.add[i].c;
+                        this.sequence[next.add[i].x][next.add[i].y] = next.add[i].s;
                     }
                     for(let i = 0; i < next.remove.length; i++) {
                         this.grid[next.remove[i].x][next.remove[i].y] = 0;
+                        this.sequence[next.remove[i].x][next.remove[i].y] = 0;
                     }
                     let data = {
                         method: "MOVERESP",
@@ -459,9 +468,11 @@ export class CoreComponent implements OnInit, OnDestroy {
                     let prev = this.history[this.steps - 1];
                     for (let i = 0; i < prev.add.length; i++) {
                         this.grid[prev.add[i].x][prev.add[i].y] = 0;
+                        this.sequence[prev.add[i].x][prev.add[i].y] = 0;
                     }
                     for (let i = 0; i < prev.remove.length; i++) {
                         this.grid[prev.remove[i].x][prev.remove[i].y] = prev.remove[i].c;
+                        this.sequence[prev.remove[i].x][prev.remove[i].y] = prev.remove[i].s;
                     }
                     let data = {
                         method: "MOVERESP",

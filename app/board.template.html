@@ -34,9 +34,15 @@
             <svg xmlns="http://www.w3.org/2000/svg" *ngFor="#cur of row; #j = index" width="500" height="500" [attr.y]="j*500" [ngSwitch]="cur">
                 <template [ngSwitchWhen]="1">
                     <circle class="black" cx="250" cy="250" r="245" fill="url(#black)"/>
+                    <text *ngIf="showSequence==='true'" class="text-sequence-black" x="250" y="250" text-anchor="middle" alignment-baseline="central">
+                        {{sequence[i][j]}}
+                    </text>  
                 </template>
                 <template [ngSwitchWhen]="-1">
                     <circle class="white" cx="250" cy="250" r="245" fill="url(#white)"/>
+                    <text *ngIf="showSequence==='true'" class="text-sequence-white" x="250" y="250" text-anchor="middle" alignment-baseline="central">
+                        {{sequence[i][j]}}
+                    </text>  
                 </template>
                 <template [ngSwitchWhen]="0">
                     <circle *ngIf="turn == 1" class="empty-black" cx="250" cy="250" r="245" fill-opacity="0" (click)="onClick(i, j)"/>
@@ -79,6 +85,18 @@
         }
         .text-coordinate {
             font: 200px Verdana, Helvetica, Arial, sans-serif;
+        } 
+        .text-sequence-black {
+            font: 200px Verdana, Helvetica, Arial, sans-serif;
+            fill: #ffffff
+        }  
+        .text-sequence-white {
+            font: 200px Verdana, Helvetica, Arial, sans-serif;
+            fill: #000000
+        }  
+        .text-sequence-last {
+            font: 200px Verdana, Helvetica, Arial, sans-serif;
+            fill: #ff0000
         }  
     </style>
 

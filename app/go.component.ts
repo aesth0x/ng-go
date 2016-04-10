@@ -41,6 +41,8 @@ export class GoComponent {
     
     newTabActive = true; // if new game config and control is shown
     twodTabActive = true; //
+    showSequence = false;
+    showSequenceText = "Show sequence";
     
     constructor(private goService: GoService) {}
     
@@ -64,6 +66,15 @@ export class GoComponent {
     
     onThreedTabClick() {
         this.twodTabActive = false;
+    }
+    
+    onShowSequence() {
+        this.showSequence = !this.showSequence;
+        if (this.showSequenceText === "Show sequence") {
+            this.showSequenceText = "Hide sequence";
+        } else {
+            this.showSequenceText = "Show sequence";
+        }
     }
     
 }

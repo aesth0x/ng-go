@@ -31,7 +31,7 @@ import {Subscription} from 'rxjs/Subscription';
     template: '',
     host: {'(mousedown)': 'onMousedown($event)',
            '(mouseup)': 'onMouseup($event)',
-            '(mousemove)': 'onMousemove($event)'}
+           '(mousemove)': 'onMousemove($event)'}
 })
 export class Board3dComponent implements OnInit, OnDestroy {
     
@@ -114,9 +114,10 @@ export class Board3dComponent implements OnInit, OnDestroy {
         this.lights[0].position.set(150, 200, 100);
         this.lights[1].position.set(-150, -200, 100);
         // geometry and material
-        this.stoneGeometry = new THREE.SphereGeometry(0.48, 64, 32);
+        this.stoneGeometry = new THREE.SphereGeometry(0.48, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2);
+        let textureLoader = new THREE.TextureLoader();
         this.gobanMaterial = new THREE.MeshPhongMaterial({
-            map: THREE.ImageUtils.loadTexture('images/wood-min.jpg'),
+            map: textureLoader.load('images/wood-min.jpg'),
             emissive: 0x000000,
             side: THREE.DoubleSide,
             shading: THREE.SmoothShading
@@ -163,6 +164,7 @@ export class Board3dComponent implements OnInit, OnDestroy {
                     opacity: 0
 				});
                 let stoneMesh = new THREE.Mesh(this.stoneGeometry, stoneMaterial);
+                stoneMesh.rotation.x = Math.PI / 2;
                 stoneMesh.position.x = i - (this.dim - 1) / 2;
                 stoneMesh.position.y = - j + (this.dim - 1) / 2;
                 stoneMesh.position.z = 0;
