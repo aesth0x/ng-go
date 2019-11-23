@@ -4,11 +4,6 @@ V 1.1.0
 
 ng-go is an Angular 2 Go game web app.
 
-The demo is here -  http://yli.io/app/ng-go/ (Updated: 4/6/2016)
-
-<img src="http://yli.io/app/ng-go/demo-2d.png" width="400">
-<img src="http://yli.io/app/ng-go/demo-3d.png" width="400">
-
 ## Features
 
 * Support new game and sgf import. 
